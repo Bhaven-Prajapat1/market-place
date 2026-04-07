@@ -32,7 +32,7 @@ const createProduct = async (req, res, next) => {
 
             return {
               url: uploaded.url,
-              thumbnail: uploaded.thumbnail,
+              thumbnail: uploaded.thumbnail, 
               id: uploaded.id,
             };
           }),
@@ -116,7 +116,7 @@ const updateProduct = async (req, res, next) => {
 
   const product = await productModel.findById(id);
 
-  if (!product) {
+  if (!product) { 
     return res
       .status(404)
       .json({ message: "Product not found or you are not the seller" });
