@@ -21,8 +21,12 @@ const validateAddItemToCart = [
   body("productId")
     .notEmpty()
     .withMessage("Product ID is required")
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    .withMessage("Invalid Product ID format"),
+    .custom((value) => {
+      if (!mongoose.Types.ObjectId.isValid(value)) {
+        throw new Error("Invalid Product ID format");
+      }
+      return true;
+    }),
 
   body("quantity")
     .isInt({ gt: 0 })
@@ -43,8 +47,12 @@ const validateUpdateCartItem = [
   param("productId")
     .notEmpty()
     .withMessage("Product ID is required")
-    .custom((value) => mongoose.Types.ObjectId.isValid(value))
-    .withMessage("Invalid Product ID format"),
+    .custom((value) => {
+      if (!mongoose.Types.ObjectId.isValid(value)) {
+        throw new Error("Invalid Product ID format");
+      }
+      return true;
+    }),
 
   // Validate quantity from body
   body("quantity")
@@ -54,7 +62,22 @@ const validateUpdateCartItem = [
   validateResult,
 ];
 
+const validateDeleteCartItem = [
+  param("productId")
+    .notEmpty()
+    .withMessage("Product ID is required")
+    .custom((value) => {
+      if (!mongoose.Types.ObjectId.isValid(value)) {
+        throw new Error("Invalid Product ID format");
+      }
+      return true;
+    }),
+
+  validateResult,
+];
+
 module.exports = {
   validateAddItemToCart,
   validateUpdateCartItem,
+  validateDeleteCartItem,
 };

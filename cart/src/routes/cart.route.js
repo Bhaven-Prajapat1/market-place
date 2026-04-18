@@ -7,11 +7,11 @@ const AuthMiddleware = require("../middlewares/auth.middleware");
 const router = express.Router();
 
 // GET /api/cart
-router.get("/",
+router.get(
+  "/",
   AuthMiddleware.createAuthMiddleware(["user"]),
   cartController.getCart,
-)
-
+);
 
 // POST /api/carts/items
 router.post(
@@ -22,10 +22,19 @@ router.post(
 );
 
 // PATCH /api/carts/items/:productId
-router.patch("/items/:productId",
+router.patch(
+  "/items/:productId",
   validation.validateUpdateCartItem,
   AuthMiddleware.createAuthMiddleware(["user"]),
   cartController.updateCartItem,
+);
+
+// DELETE /api/carts/items/:productId
+router.delete(
+  "/items/:productId",
+  validation.validateDeleteCartItem,
+  AuthMiddleware.createAuthMiddleware(["user"]),
+  cartController.removeCartItem,
 );
 
 module.exports = router;
