@@ -75,7 +75,102 @@ async function createOrder(req, res) {
       .json({ message: "Internal server error", error: err.message });
   }
 }
+async function getUserOrders(req, res) {
+  const user = req.user;
+
+  try {
+    const orders = await orderModel.find({ user: user.id });
+    res.status(200).json({ orders });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+}
+async function getOrderById(req, res) {
+  const user = req.user;
+  const orderId = req.params.id;
+
+  try {
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ order });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+}
+async function updateOrderAddress(req, res) {
+  const user = req.user;
+  const orderId = req.params.id;
+
+  try {
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    if (order.user.toString() !== user.id) {
+      return res.status(403).json({ message: "Forbidden: Not your order" });
+    }
+    if (order.status !== "PENDING") {
+      return res
+        .status(409)
+        .json({ message: "Cannot update address after payment is captured" });
+    }
+
+    order.shippingAddress = {
+      street: req.body.shippingAddress.street,
+      city: req.body.shippingAddress.city,
+      state: req.body.shippingAddress.state,
+      pincode: req.body.shippingAddress.pincode,
+      country: req.body.shippingAddress.country,
+    };
+
+    await order.save();
+
+    res.status(200).json({ message: "Shipping address updated", order });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+}
+async function cancelOrder(req, res) {
+  const user = req.user;
+  const orderId = req.params.id;
+
+  try {
+    const order = await orderModel.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    if (order.user.toString() !== user.id) {
+      return res.status(403).json({ message: "Forbidden: Not your order" });
+    }
+    if (!["PENDING", "CONFIRMED"].includes(order.status)) {
+      return res
+        .status(409)
+        .json({ message: "Cannot cancel order at this stage" });
+    }
+
+    order.status = "CANCELLED";
+    await order.save();
+
+    res.status(200).json({ message: "Order cancelled successfully", order });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+}
 
 module.exports = {
   createOrder,
+  getUserOrders,
+  getOrderById,
+  updateOrderAddress,
+  cancelOrder,
 };

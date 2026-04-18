@@ -33,6 +33,31 @@ const createOrderValidation = [
   validateResult,
 ];
 
+const updateOrderAddressValidation = [
+  body("shippingAddress.street")
+    .isString()
+    .withMessage("Street must be a string"),
+
+  body("shippingAddress.city")
+    .isString()
+    .withMessage("City must be a string"),
+
+  body("shippingAddress.state")
+    .isString()
+    .withMessage("State must be a string"),
+
+  body("shippingAddress.country")
+    .isString()
+    .withMessage("Country must be a string"),
+
+  body("shippingAddress.pincode")
+    .matches(/^\d{6}$/)
+    .withMessage("Pin code must be a 6-digit number"),
+  validateResult,
+];
+
 module.exports = {
   createOrderValidation,
+  updateOrderAddressValidation,
+  
 };
