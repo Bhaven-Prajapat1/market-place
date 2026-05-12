@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { publishToQueue } = require("../broker/broker");
 const redis = require("../db/redis");
 
 // POST /auth/register
@@ -36,6 +37,17 @@ const registerUser = async (req, res) => {
     addresses,
     role,
   });
+
+  await Promise.all([
+    publishToQueue("AUTH_NOTIFICATION.USER_CREATED", {
+      id: newUser._id,
+      email: newUser.email,
+      username: newUser.username, 
+      fullName: newUser.fullName,
+    }),
+    publishToQueue("AUTH_SELLER_DASHBOARD.USER_CREATED", newUser),
+  ]);
+
   const token = jwt.sign(
     {
       id: newUser._id,

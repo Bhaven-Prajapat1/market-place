@@ -1,4 +1,4 @@
-const amqplib = require("amqplib");
+const amqplib = require('amqplib');
 
 let channel, connection;
 
@@ -13,8 +13,6 @@ async function connect() {
     console.error("Failed to connect to RabbitMQ:", err);
   }
 }
-
-// message publish to queue
 async function publishToQueue(queueName, data = {}) {
   if (!channel || !connection) await connect();
 
@@ -24,7 +22,6 @@ async function publishToQueue(queueName, data = {}) {
   console.log(`Message sent to queue ${queueName}:`, data);
 }
 
-// message subscribe(readable) to queue
 async function subscribeToQueue(queueName, callback) {
   if (!channel || !connection) await connect();
 
@@ -33,7 +30,6 @@ async function subscribeToQueue(queueName, callback) {
   channel.consume(queueName, async (msg) => {
     if (msg !== null) {
       const data = JSON.parse(msg.content.toString());
-      console.log(`Message received from queue ${queueName}:`, data);
       await callback(data);
       channel.ack(msg);
     }
@@ -45,5 +41,5 @@ module.exports = {
   connection,
   channel,
   publishToQueue,
-  subscribeToQueue,
+  subscribeToQueue
 };

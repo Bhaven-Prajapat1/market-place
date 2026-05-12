@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const productModel = require("../models/product.model");
+const { publishToQueue } = require("../broker/broker");
 const { uploadImage } = require("../services/imagekit.service");
 
 const createProduct = async (req, res, next) => {
@@ -32,7 +33,7 @@ const createProduct = async (req, res, next) => {
 
             return {
               url: uploaded.url,
-              thumbnail: uploaded.thumbnail, 
+              thumbnail: uploaded.thumbnail,
               id: uploaded.id,
             };
           }),
@@ -48,6 +49,16 @@ const createProduct = async (req, res, next) => {
         currency: normalizedCurrency,
       },
       images,
+    });
+
+    
+    await publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_CREATED", product);
+    await publishToQueue("PRODUCT_NOTIFICATION.PRODUCT_CREATED", {
+      productId: product._id,
+      productName: product.title,
+      email: req.user.email,
+      username: req.user.username,
+      sellerId: seller,
     });
 
     return res.status(201).json(product);
@@ -116,7 +127,7 @@ const updateProduct = async (req, res, next) => {
 
   const product = await productModel.findById(id);
 
-  if (!product) { 
+  if (!product) {
     return res
       .status(404)
       .json({ message: "Product not found or you are not the seller" });
@@ -176,17 +187,17 @@ const deleteProduct = async (req, res, next) => {
 };
 
 const getProductsBySeller = async (req, res, next) => {
-
   const sellerId = req.user.id;
 
   const { skip = 0, limit = 20 } = req.query;
 
-  const products = await productModel.find({ seller: sellerId }).skip(Number(skip)).limit(Math.min(Number(limit), 20));
+  const products = await productModel
+    .find({ seller: sellerId })
+    .skip(Number(skip))
+    .limit(Math.min(Number(limit), 20));
 
   return res.status(200).json({ data: products });
-
-
-}
+};
 
 module.exports = {
   createProduct,

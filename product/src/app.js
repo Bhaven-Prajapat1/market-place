@@ -13,4 +13,8 @@ app.use((err, req, res, next) => {
 	res.status(500).json({ message: "Internal server error" });
 });
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "Product Service is running!" });
+});
+
 module.exports = app; 
