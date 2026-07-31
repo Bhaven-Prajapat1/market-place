@@ -132,8 +132,12 @@ const getUserProfile = async (req, res) => {
 const logoutUser = async (req, res) => {
   const token = req.cookies.token;
   if (token) {
-    // blacklist token in Redis with expiration
-    await redis.set(`blacklist_${token}`, "true", "EX", 24 * 60 * 60); // expire in 1 day
+    try {
+      // blacklist token in Redis with expiration
+      await redis.set(`blacklist_${token}`, "true", "EX", 24 * 60 * 60); // expire in 1 day
+    } catch (error) {
+      console.warn("Failed to blacklist token in Redis:", error.message);
+    }
   }
   res.clearCookie("token", {
     httpOnly: true,
