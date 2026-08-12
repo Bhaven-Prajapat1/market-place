@@ -6,7 +6,7 @@ const searchProduct = tool(
   async ({ query, token }) => {
 
     const response = await axios.get(
-      `http://localhost:3001/api/products?q=${query}`,
+      `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/products?q=${query}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ const searchProduct = tool(
 const addProductToCart = tool(
   async ({ productId, qty = 1, token }) => {
     const response = await axios.post(
-      `http://localhost:3002/api/cart/items`,
+      `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/cart/items`,
       {
         productId,
         qty,

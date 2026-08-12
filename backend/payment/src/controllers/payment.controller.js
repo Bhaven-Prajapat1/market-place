@@ -1,4 +1,4 @@
-const paymentModel = require("../models/payment.model");
+const paymentModel = require("../models/payment.model.js");
 const Razorpay = require("razorpay");
 require("dotenv").config();
 const axios = require("axios");
@@ -15,7 +15,7 @@ async function createPayment(req, res) {
     const orderId = req.params.orderId;
 
     const orderResponse = await axios.get(
-      `http://localhost:3003/api/orders/${orderId}`,
+      `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/orders/${orderId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ async function verifyPayment(req, res) {
   try {
     const {
       validatePaymentVerification,
-    } = require("../../node_modules/razorpay/dist/utils/razorpay-utils.js");
+    } = require("razorpay/dist/utils/razorpay-utils.js");
 
     const isValid = validatePaymentVerification(
       {

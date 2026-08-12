@@ -90,11 +90,14 @@ describe("POST /api/orders - create order from current cart", () => {
     };
 
     axios.get.mockImplementation(async (url) => {
-      if (url === "http://localhost:3002/api/cart") {
+      if (
+        url ===
+        "http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/cart"
+      ) {
         return { data: { cart } };
       }
 
-      const match = url.match(/^http:\/\/localhost:3001\/api\/products\/(.+)$/);
+      const match = url.match(/^http:\/\/marketplace-alb-728332135.ap-south-1.elb.amazonaws.com\/api\/products\/(.+)$/);
       if (match) {
         const id = match[1];
         return { data: { product: productsById[id] } };
@@ -154,9 +157,12 @@ describe("POST /api/orders - create order from current cart", () => {
     expect(saved.totalPrice.amount).toBe(450);
 
     // Ensure downstream calls used the cookie token
-    expect(axios.get).toHaveBeenCalledWith("http://localhost:3002/api/cart", {
-      headers: { Authorization: expect.stringMatching(/^Bearer\s+.+/) },
-    });
+    expect(axios.get).toHaveBeenCalledWith(
+      "http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/cart",
+      {
+        headers: { Authorization: expect.stringMatching(/^Bearer\s+.+/) },
+      },
+    );
   });
 
   test("500 when a cart item quantity exceeds stock; does not create order", async () => {
@@ -169,12 +175,15 @@ describe("POST /api/orders - create order from current cart", () => {
     };
 
     axios.get.mockImplementation(async (url) => {
-      if (url === "http://localhost:3002/api/cart") {
+      if (
+        url ===
+        "http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/cart"
+      ) {
         return { data: { cart } };
       }
 
       if (
-        url === `http://localhost:3001/api/products/${prodOosId.toString()}`
+        url === `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/products/${prodOosId.toString()}`
       ) {
         return {
           data: {
