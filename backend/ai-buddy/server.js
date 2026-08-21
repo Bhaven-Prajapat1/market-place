@@ -4,12 +4,13 @@ const { initSocketServer } = require("./src/socket/socket.server");
 
 const http = require("http");
 
+const PORT = process.env.PORT || 3005;
 const httpServer = http.createServer(app);
 
 initSocketServer(httpServer);
 
-httpServer.listen(3005, () => {
-  console.log("Ai buddy is running on port 3005");
+httpServer.listen(PORT, () => {
+  console.log(`Ai buddy is running on port ${PORT}`);
 });
 
 
