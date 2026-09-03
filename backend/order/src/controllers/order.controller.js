@@ -10,7 +10,7 @@ async function createOrder(req, res) {
   try {
     // fetch user cart from cart service
     const cartResponse = await axios.get(
-      `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/cart`,
+      `https://market-place-cart.onrender.com/api/cart`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -22,7 +22,7 @@ async function createOrder(req, res) {
       cartResponse.data.cart.items.map(async (item) => {
         return (
           await axios.get(
-            `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/products/${item.productId}`,
+            `https://market-place-product-qcwv.onrender.com/api/products/${item.productId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
