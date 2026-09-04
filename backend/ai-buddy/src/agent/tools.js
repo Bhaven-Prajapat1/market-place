@@ -1,12 +1,13 @@
 const { tool } = require("@langchain/core/tools");
 const { z } = require("zod");
 const axios = require("axios");
+const { process } = require("zod/v4/core");
 
 const searchProduct = tool(
   async ({ query, token }) => {
 
     const response = await axios.get(
-      `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/products?q=${query}`,
+      `${process.env.PRODUCT_SERVICE_URL}?q=${query}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -28,7 +29,7 @@ const searchProduct = tool(
 const addProductToCart = tool(
   async ({ productId, qty = 1, token }) => {
     const response = await axios.post(
-      `http://marketplace-alb-728332135.ap-south-1.elb.amazonaws.com/api/cart/items`,
+      `${process.env.CART_SERVICE_URL}/items`,
       {
         productId,
         qty,
