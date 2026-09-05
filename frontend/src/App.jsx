@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
+import Login from "./features/auth/pages/Login";
+import SignUp from "./features/auth/pages/SignUp";
 
 const App = () => {
   const [page, setPage] = useState(
