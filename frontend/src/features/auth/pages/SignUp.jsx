@@ -6,9 +6,12 @@ import {
   IoMailOutline,
   IoPersonOutline,
 } from "react-icons/io5";
+import { Link, useNavigate } from "react-router";
 import "./SignUp.css";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -34,9 +37,8 @@ const SignUp = () => {
     }
     setLoading(true);
     try {
-      // marketplace-ALB-728332135.ap-south-1.elb.amazonaws.com
       const res = await fetch(
-        "http://marketplace-ALB-728332135.ap-south-1.elb.amazonaws.com/api/auth/register",
+        "https://market-place-nsgh.onrender.com/api/auth/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -56,8 +58,7 @@ const SignUp = () => {
       }
       const data = await res.json();
       console.log("Registered:", data);
-      // Optionally redirect to login
-      window.location.hash = "#login";
+      navigate("../../home/pages/Home.jsx");
     } catch (err) {
       setError(err.message || "Registration error");
     } finally {
@@ -191,7 +192,7 @@ const SignUp = () => {
 
           <div className="signup-prompt">
             <p>
-              Already have an account? <a href="#login">Sign in</a>
+              Already have an account? <Link to={"/"} >Sign in</Link>
             </p>
           </div>
         </div>

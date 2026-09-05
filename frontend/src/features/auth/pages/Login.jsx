@@ -5,9 +5,12 @@ import {
   IoLockClosedOutline,
   IoMailOutline,
 } from "react-icons/io5";
+import { Link, useNavigate } from "react-router";
 import "./Login.css";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +25,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        "http://marketplace-ALB-728332135.ap-south-1.elb.amazonaws.com/api/auth/login",
+        "https://market-place-nsgh.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: {
@@ -38,7 +41,7 @@ const Login = () => {
 
       const data = await response.json();
       console.log("Login successful:", data);
-      // TODO: Store token and redirect to dashboard
+      navigate("/home");
     } catch (err) {
       setError(err.message || "An error occurred during login");
     } finally {
@@ -141,7 +144,7 @@ const Login = () => {
           {/* Sign Up Link */}
           <div className="signup-prompt">
             <p>
-              Don't have an account? <a href="#signup">Sign up</a>
+              Don't have an account? <Link to={"/register"}>Sign up</Link>
             </p>
           </div>
 

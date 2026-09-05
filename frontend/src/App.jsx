@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router";
 import Login from "./features/auth/pages/Login";
 import SignUp from "./features/auth/pages/SignUp";
+import Home from "./features/home/pages/Home";
 
-const App = () => {
-  const [page, setPage] = useState(
-    window.location.hash === "#signup" ? "signup" : "login",
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+        <Route path="/home" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
   );
-
-  useEffect(() => {
-    const onHash = () =>
-      setPage(window.location.hash === "#signup" ? "signup" : "login");
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
-  }, []);
-
-  return page === "signup" ? <SignUp /> : <Login />;
-};
+}
 
 export default App;
